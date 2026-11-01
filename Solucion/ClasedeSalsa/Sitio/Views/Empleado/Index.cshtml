@@ -1,0 +1,105 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <!-- Agregar Bootstrap para los estilos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Agregar FontAwesome para los iconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin-top: 50px;
+        }
+
+        .clock {
+            font-size: 50px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .calendar {
+            font-size: 30px;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .btn-login {
+            padding: 15px 30px;
+            font-size: 20px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 30px;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn-login:hover {
+                background-color: #218838;
+            }
+
+        .lead {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container text-center">
+        <h2 class="display-4 mb-4">Welcome to Saba Latin</h2>
+
+        <!-- Mostrar fecha y hora dinámica -->
+        <div class="clock" id="clock"></div>
+        <div class="calendar" id="calendar"></div>
+
+        <p class="lead mb-4">Access the system using the following button:</p>
+
+        <!-- Enlace de acceso al Login -->
+        <a href="@Url.Action("Logueo", "Empleado")" class="btn-login">
+            <i class="fas fa-sign-in-alt"></i>Login
+        </a>
+
+        <p class="text-muted">If you do not have an account, please contact support..</p>
+    </div>
+
+    <!-- Script para actualizar hora y fecha -->
+    <script>
+        function updateTime() {
+            var now = new Date();
+            var date = now.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            var time = now.toLocaleTimeString('en-US', { hour12: false });
+
+            document.getElementById('calendar').textContent = date;
+            document.getElementById('clock').textContent = time;
+        }
+
+        setInterval(updateTime, 1000); // Actualizar cada segundo
+        updateTime(); // Llamar la función al cargar la página
+    </script>
+
+    <!-- Agregar los scripts de Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

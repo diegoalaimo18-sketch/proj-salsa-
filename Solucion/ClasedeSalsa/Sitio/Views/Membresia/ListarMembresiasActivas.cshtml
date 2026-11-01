@@ -1,0 +1,162 @@
+﻿@model List<Sitio.Models.Membresia>
+
+@{
+    ViewBag.Title = "Active Memberships";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Active Memberships</h2>
+
+
+
+@if (ViewBag.SuccessMessage != null)
+{
+    <div class="alert alert-success">
+        @ViewBag.SuccessMessage
+    </div>
+}
+
+    <form method="get" action="@Url.Action("Filtrar", "Membresia")" class="col-md-6 col-lg-4">
+        <div class="form-group">
+            <label for="searchName">Search by Name:</label>
+            <input type="text" id="searchName" name="searchName" class="form-control" placeholder="Enter name" value="@Request.QueryString["searchName"]" />
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <div>
+                <button type="submit" class="btn btn-primary">Search</button>
+                <a href="@Url.Action("ListarMembresiasActivas", "Membresia")" class="btn btn-secondary ml-2">Clear</a>
+            </div>
+
+            <button type="submit" form="formAsistencia" class="btn btn-primary" name="action" value="confirmAssist" onclick="return validateCheckboxes()">Confirm Assist</button>
+        </div>
+    </form>
+
+    @using (Html.BeginForm("ActualizarEstadoMembresia", "Membresia", FormMethod.Post, new { id = "formAsistencia" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Assist</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Start Date</th>
+                    <th>Expiration Date</th>
+                    <th>Amount</th>
+                    <th>Classes Attended</th>
+                    <th>Pay By</th>
+                    <th>Observations</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Sitio.Models.Membresia membresia in Model)
+                {
+                    string colorClass = "";
+
+                    switch (membresia.TipoMembresia.Nombre)
+                    {
+                        case "4 Pack":
+                            colorClass = "four-pack";
+                            break;
+
+                        case "Unlimited/week":
+                            colorClass = "unlimited-week";
+                            break;
+
+                        case "Week Intro":
+                            colorClass = "week-intro";
+                            break;
+
+                        case "Casual":
+                            colorClass = "casual";
+                            break;
+
+                        case "2 times/week":
+                            colorClass = "two-times-week";
+                            break;
+
+                        case "Free trial":
+                            colorClass = "free-trial";
+                            break;
+
+                        case "10 pack":
+                            colorClass = "ten-pack";
+                            break;
+
+                        case "Unlimited/month":
+                            colorClass = "unlimited-month";
+                            break;
+
+                        default:
+                            colorClass = "default";
+                            break;
+                    }
+
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="selectedMembers" value="@membresia.IdMembresia" />
+                        </td>
+                        <td>@membresia.Miembro.NombreCompleto</td>
+                        <td class="@colorClass">@membresia.TipoMembresia.Nombre</td>
+                        <td>@membresia.FechaInicio.ToShortDateString()</td>
+                        <td>@membresia.FechaExpiracion.ToShortDateString()</td>
+                        <td>$@membresia.Costo</td>
+                        <td>@membresia.CantClases</td>
+                        <td>@membresia.Pago</td>
+                        <td>@membresia.Observacion</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <script>
+        function validateCheckboxes() {
+            const checkboxes = document.querySelectorAll('input[name="selectedMembers"]:checked');
+            if (checkboxes.length === 0) {
+                alert("Please select at least one member.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+
+    <style>
+        .four-pack {
+            background-color: #FF69B4;
+        }
+
+        .unlimited-week {
+            background-color: #FF0000;
+        }
+
+        .week-intro {
+            background-color: #FFA500;
+        }
+
+        .casual {
+            background-color: #87CEEB;
+        }
+
+        .two-times-week {
+            background-color: #5B9BD5;
+        }
+
+        .free-trial {
+            background-color: #FFFFE0;
+        }
+
+        .ten-pack {
+            background-color: #8A2BE2;
+        }
+
+        .unlimited-month {
+            background-color: #32CD32;
+        }
+
+        .default {
+            background-color: #F5F5F5;
+        }
+    </style>

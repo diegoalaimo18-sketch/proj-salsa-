@@ -1,0 +1,191 @@
+﻿@model IEnumerable<Sitio.Models.Membresia>
+
+@{
+    ViewBag.Title = "ListarMiembros";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Complete Member List</h2>
+
+<form method="get" action="@Url.Action("FiltrarListaCompleta", "Membresia")" class="mb-4">
+    <div class="row">
+        <div class="col-md-6 col-lg-4">
+            <div class="form-group">
+                <label for="searchName">Search by Name:</label>
+                <input type="text" id="searchName" name="searchName" class="form-control" placeholder="Enter name" value="@Request.QueryString["searchName"]" />
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a href="@Url.Action("ListarMiembros", "Membresia")" class="btn btn-secondary ml-2">Clear</a>
+</form>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Mail</th>
+            <th>Phone</th>
+            <th>Type of Membership</th>
+            <th>Start Date</th>
+            <th>Expiration Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var membresia in Model)
+        {
+            string colorClass = "default";
+
+            if (membresia.TipoMembresia != null)
+            {
+                switch (membresia.TipoMembresia.Nombre)
+                {
+                    case "4 Pack":
+                        colorClass = "four-pack";
+                        break;
+
+                    case "Unlimited/week":
+                        colorClass = "unlimited-week";
+                        break;
+
+                    case "Week Intro":
+                        colorClass = "week-intro";
+                        break;
+
+                    case "Casual":
+                        colorClass = "casual";
+                        break;
+
+                    case "2 times/week":
+                        colorClass = "two-times-week";
+                        break;
+
+                    case "Free trial":
+                        colorClass = "free-trial";
+                        break;
+
+                    case "10 pack":
+                        colorClass = "ten-pack";
+                        break;
+
+                    case "Unlimited/month":
+                        colorClass = "unlimited-month";
+                        break;
+                }
+            }
+
+            <tr>
+                <td>
+                    @membresia.Miembro.NombreCompleto
+                </td>
+
+                <td>
+                    @membresia.Miembro.Mail
+                </td>
+
+                <td>
+                    @membresia.Miembro.Telefono
+                </td>
+
+                <td class="@colorClass">
+                    @if (membresia.TipoMembresia == null)
+                    {
+                        <span class="expired">EXPIRED</span>
+                    }
+                    else
+                    {
+                        @membresia.TipoMembresia.Nombre
+                    }
+                </td>
+
+                <td>
+                    @if (membresia.TipoMembresia == null)
+                    {
+                        <span>-</span>
+                    }
+                    else
+                    {
+                        @membresia.FechaInicio.ToString("dd/MM/yyyy")
+                    }
+                </td>
+
+                <td>
+                    @if (membresia.TipoMembresia == null)
+                    {
+                        <span>-</span>
+                    }
+                    else
+                    {
+                        @membresia.FechaExpiracion.ToString("dd/MM/yyyy")
+                    }
+                </td>
+
+                <td>
+                    @Html.ActionLink("Update member","FormModificar",new { idMiembro = membresia.Miembro.IdMiembro }
+                    )
+
+                    |
+
+                    @Html.ActionLink("Add Membership",  "FormAltaMembresia",new { idMiembro = membresia.Miembro.IdMiembro }
+                    )
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<style>
+    .four-pack {
+        background-color: #FF69B4;
+        padding: 2px;
+    }
+
+    .unlimited-week {
+        background-color: #FF0000;
+        padding: 2px;
+    }
+
+    .week-intro {
+        background-color: #FFA500;
+        padding: 2px;
+    }
+
+    .casual {
+        background-color: #87CEEB;
+        padding: 2px;
+    }
+
+    .two-times-week {
+        background-color: #5B9BD5;
+        padding: 2px;
+    }
+
+    .free-trial {
+        background-color: #FFFFE0;
+        padding: 2px;
+    }
+
+    .ten-pack {
+        background-color: #8A2BE2;
+        padding: 2px;
+    }
+
+    .unlimited-month {
+        background-color: #32CD32;
+        padding: 2px;
+    }
+
+    .default {
+        background-color: #F5F5F5;
+        padding: 2px;
+    }
+
+    .expired {
+        color: red;
+        font-weight: bold;
+    }
+</style>

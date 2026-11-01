@@ -1,0 +1,126 @@
+﻿@model Sitio.Models.Empleado
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingreso al Sistema</title>
+    <!-- Agregar Bootstrap para los estilos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+            padding-top: 50px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin-top: 50px;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-submit {
+            background-color: #007bff;
+            color: white;
+            font-size: 1.1rem;
+            padding: 10px 30px;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn-submit:hover {
+                background-color: #0056b3;
+            }
+
+        .back-link {
+            font-size: 1.1rem;
+            margin-top: 20px;
+            display: block;
+            text-align: center;
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+            .back-link:hover {
+                color: #0056b3;
+            }
+
+        .form-control {
+            border-radius: 5px;
+        }
+
+        .text-danger {
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 class="text-center">Login to the System</h2>
+
+        <!-- Enlace a la página de inicio -->
+        <a href="@Url.Action("Index", "Home")" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to home page
+        </a>
+
+        @ViewBag.Mensaje
+
+        @using (Html.BeginForm())  
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal mt-4">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.UsuLog, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(model => model.UsuLog, new { @class = "form-control", placeholder = "Enter your username" })
+                        @Html.ValidationMessageFor(model => model.UsuLog, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PassUsu, htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.PasswordFor(model => model.PassUsu, new { @class = "form-control", placeholder = "Enter your password" })
+                        @Html.ValidationMessageFor(model => model.PassUsu, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group text-center">
+                    <input type="submit" value="Iniciar Sesión" class="btn-submit" />
+                </div>
+            </div>
+        }
+    </div>
+    @if (ViewBag.ErrorMessage != null)
+    {
+<div class="alert alert-danger">@ViewBag.ErrorMessage</div>}
+    <!-- Agregar los scripts de Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

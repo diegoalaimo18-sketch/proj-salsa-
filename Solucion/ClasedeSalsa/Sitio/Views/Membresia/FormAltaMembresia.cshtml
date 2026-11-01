@@ -1,0 +1,84 @@
+﻿@model Sitio.Models.Membresia
+
+@{
+    ViewBag.Title = "Register Memberships";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Register Memberships</h2>
+
+
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.IdMiembro)
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6 col-lg-4">
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Miembro.NombreCompleto, "Name")
+                <div>
+                    <span class="highlighted-name">@Html.DisplayFor(model => model.Miembro.NombreCompleto)</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.IdTipoMembresia, "Type")
+                @Html.DropDownListFor(
+                    m => m.IdTipoMembresia,
+                    new SelectList(
+                        new List<SelectListItem>
+                        {
+                            new SelectListItem { Value = "1", Text = "Week Intro" },
+                            new SelectListItem { Value = "2", Text = "Unlimited/week" },
+                            new SelectListItem { Value = "3", Text = "Casual" },
+                            new SelectListItem { Value = "4", Text = "2 times/week" },
+                            new SelectListItem { Value = "5", Text = "Free trial" },
+                            new SelectListItem { Value = "6", Text = "10 pack" },
+                            new SelectListItem { Value = "7", Text = "Unlimited/month" },
+                            new SelectListItem { Value = "8", Text = "4 Pack" }
+                        },
+                        "Value",
+                        "Text"
+                    ),
+                    "-- Select a type --",
+                    new { @class = "form-control" }
+                )
+                @Html.ValidationMessageFor(m => m.IdTipoMembresia, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Pago, "Pay by")
+                @Html.DropDownListFor(
+                    m => m.Pago,
+                    new SelectList(new List<string> { "Cash", "Card" }),
+                    "-- Select a type --",
+                    new { @class = "form-control" }
+                )
+
+                @Html.ValidationMessageFor(m => m.Pago, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Observacion, "Notes")
+                @Html.TextAreaFor(m => m.Observacion, new { @class = "form-control", rows = 3, placeholder = "Additional Observations" })
+            </div>
+
+            <input type="submit" value="Register Membership" class="btn btn-primary" />
+            @Html.ActionLink("Back to List", "ListarMiembros", null, new { @class = "btn btn-secondary ml-2" })
+
+        </div>
+    </div>
+}
+
+<style>
+    .highlighted-name {
+        font-weight: bold;
+        color: #007bff;
+        font-size: 20px;
+    }
+</style>

@@ -1,0 +1,153 @@
+1. Requerimientos del Sistema
+Objetivo:
+Crear un sistema para gestionar clases de salsa, donde se controle:
+
+Usuarios empleados que puedan iniciar sesión en el sistema.
+Miembros (clientes) que se registren con sus datos personales.
+Membresías de los miembros, con tipos predefinidos, fechas y control del límite de clases.
+La consulta interactiva de los miembros, indicando:
+Clases disponibles según su membresía.
+Estado de las clases (disponibles/agotadas).
+2. Funcionalidades Principales
+1. Empleado (Logueo)
+Cada empleado debe iniciar sesión con:
+UsuLog: Único en el sistema.
+Contraseña: Para autenticación segura.
+Restricciones:
+
+UsuLog debe ser único.
+Validar la contraseña antes de otorgar acceso.
+2. Miembros (Clientes)
+Registro de información básica:
+Nombre completo.
+Teléfono.
+Correo electrónico.
+Cada miembro tendrá una membresía asociada.
+3. Membresías
+Cada membresía debe contener:
+
+Tipo de membresía:
+Unlimited/week.
+Casual.
+2 times/week.
+Free trial.
+10 pack.
+Unlimited/month.
+Detalles asociados:
+Activo/Inactivo.
+Fecha de inicio y fecha de expiración.
+Costo.
+Observaciones.
+4. Control de Clases
+Registrar y controlar cuántas clases ha tomado un miembro.
+Validar que no excedan el límite según el tipo de membresía:
+Ejemplo: 2 times/week → Solo permite tomar 2 clases por semana.
+5. Consulta de Miembros
+Listado interactivo:
+Mostrar los datos básicos del miembro.
+Indicar cuántas clases disponibles tiene según su membresía.
+Resaltar si ya agotó las clases permitidas.
+3. Diseño de Base de Datos
+Tablas Principales:
+Empleado
+
+Columnas: IdEmpleado, UsuLog, Contraseña.
+Uso: Control de acceso al sistema.
+Miembro
+
+Columnas: IdMiembro, NombreCompleto, Telefono, Mail.
+Uso: Registro de información de los clientes.
+Membresia
+
+Columnas: IdMembresia, IdMiembro, Tipo, Activo, FechaInicio, FechaExpiracion, Costo, Observacion.
+Uso: Asociar membresías a los miembros y controlar fechas, costos y estados.
+ClaseTomada
+
+Columnas: IdClase, IdMiembro, FechaClase.
+Uso: Registro de clases tomadas por cada miembro.
+4. Procedimientos Almacenados (SP)
+1. SP para Logueo de Empleado
+Verificar si el UsuLog y Contraseña son válidos.
+2. SP para CRUD de Miembro
+Crear Miembro: Insertar datos básicos.
+Leer Miembro: Consultar miembros y su información.
+Actualizar Miembro: Modificar datos.
+Eliminar Miembro: Baja lógica.
+3. SP para Membresías
+Asignar Membresía: Registrar una membresía para un miembro.
+Actualizar Membresía: Cambiar estado, fechas o tipo.
+Consultar Membresías: Mostrar membresías activas y vencidas.
+4. SP para Clases
+Registrar Clase: Agregar un registro de clase tomada por un miembro.
+Validar Clases Disponibles: Calcular cuántas clases le quedan al miembro según la membresía.
+5. Flujo del Sistema
+Inicio de Sesión (Empleado)
+
+El sistema verifica las credenciales ingresadas y otorga acceso si son válidas.
+Gestión de Miembros
+
+El usuario empleado puede:
+Registrar un nuevo miembro.
+Consultar miembros existentes.
+Actualizar datos personales.
+Eliminar miembros (baja lógica).
+Gestión de Membresías
+
+Registrar una membresía para un miembro.
+Controlar fechas de inicio, expiración y estado.
+Validar si el miembro puede tomar más clases según la membresía.
+Control de Clases
+
+Registrar cada clase tomada por un miembro.
+Validar que no exceda el límite de su membresía.
+Consulta de Miembros
+
+Mostrar el estado actual de las clases disponibles para cada miembro.
+6. Reglas de Negocio
+Tipos de Membresías y Límite de Clases
+
+Unlimited/week → Sin límite de clases en la semana.
+Casual → Solo una clase por semana.
+2 times/week → Máximo 2 clases por semana.
+Free trial → Una clase gratis.
+10 pack → Máximo 10 clases (sin límite temporal).
+Unlimited/month → Sin límite de clases en un mes.
+Control de Membresías Activas
+
+Solo los miembros con una membresía activa pueden tomar clases.
+Validación de Fechas
+
+No se pueden registrar clases para miembros con membresías expiradas.
+7. Puntos Clave para Implementar en ASP.NET MVC
+Modelo (Model):
+
+Clases para Empleado, Miembro, Membresia y ClaseTomada.
+Asegurar las validaciones necesarias (requeridos, fechas, límites).
+Controlador (Controller):
+
+EmpleadoController: Manejar el logueo.
+MiembroController: CRUD para miembros.
+MembresiaController: Asignar y gestionar membresías.
+ClaseController: Registrar clases tomadas.
+Vista (View):
+
+Crear formularios y tablas para mostrar la información:
+Login.
+Registro de miembros y membresías.
+Consulta de clases y estado.
+Ado.NET:
+
+Usar procedimientos almacenados para todas las operaciones de base de datos.
+8. Entregables Finales
+Base de Datos
+
+Estructura de tablas y procedimientos almacenados.
+Datos de prueba (empleados, miembros, membresías, clases).
+Sistema Web (ASP.NET MVC)
+
+Funcionalidades completas: logueo, gestión de miembros y membresías, consulta de clases.
+Documentación Técnica
+
+Estructura de la base de datos.
+Diagrama de flujo de procesos.
+Manual de usuario.

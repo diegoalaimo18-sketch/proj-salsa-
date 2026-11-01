@@ -1,0 +1,465 @@
+﻿
+@model IEnumerable<Sitio.Models.OverallAverage>
+
+@{
+    ViewBag.Title = "Financial Overview";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var months = Model.OrderBy(m => m.Mes).ToList();
+    var selectedYear = ViewBag.AñoSeleccionado ?? DateTime.Now.Year;
+
+    decimal totalRevenue = months.Sum(m => m.Total);
+    decimal totalCash = months.Sum(m => m.Cash);
+    decimal totalCard = months.Sum(m => m.Card);
+    decimal totalRent = months.Sum(m => m.Rent);
+    decimal totalTakeHome = months.Sum(m => m.TakeHome);
+}
+
+<style>
+    .finance-page {
+        padding: 25px 0 40px;
+        color: #253044;
+    }
+
+    .finance-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 25px;
+    }
+
+    .finance-subtitle {
+        color: #7b8494;
+        margin-top: 6px;
+    }
+
+    .finance-filter {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .finance-filter select {
+            min-width: 100px;
+            height: 38px;
+            border: 1px solid #dce2eb;
+            border-radius: 8px;
+            padding: 0 10px;
+            background: white;
+        }
+
+        .finance-filter button {
+            height: 38px;
+            border: none;
+            border-radius: 8px;
+            padding: 0 16px;
+            background: #263c70;
+            color: white;
+            cursor: pointer;
+        }
+
+            .finance-filter button:hover {
+                background: #1c2e59;
+            }
+
+    .finance-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .finance-card {
+        background: white;
+        border: 1px solid #e5e9f0;
+        border-radius: 12px;
+        padding: 18px;
+        box-shadow: 0 3px 12px rgba(30, 45, 75, .04);
+    }
+
+    .finance-card-label {
+        font-size: 12px;
+        color: #788397;
+        text-transform: uppercase;
+        letter-spacing: .6px;
+        font-weight: 600;
+    }
+
+    .finance-card-value {
+        font-size: 25px;
+        font-weight: 700;
+        margin-top: 8px;
+        overflow-wrap: anywhere;
+    }
+
+    .finance-card.total {
+        border-top: 4px solid #4778d0;
+    }
+
+    .finance-card.cash {
+        border-top: 4px solid #36a878;
+    }
+
+    .finance-card.card-payment {
+        border-top: 4px solid #8b70d6;
+    }
+
+    .finance-card.rent {
+        border-top: 4px solid #e3a33d;
+    }
+
+    .finance-card.profit {
+        border-top: 4px solid #23966c;
+    }
+
+    .finance-table-wrapper {
+        background: white;
+        border: 1px solid #e5e9f0;
+        border-radius: 12px;
+        overflow-x: auto;
+        box-shadow: 0 3px 12px rgba(30, 45, 75, .04);
+    }
+
+    .finance-table {
+        width: 100%;
+        min-width: 1100px;
+        margin: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+        .finance-table thead th {
+            background: #f5f7fb;
+            color: #667187;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            padding: 14px 12px;
+            border-bottom: 1px solid #e5e9f0;
+            white-space: nowrap;
+        }
+
+        .finance-table tbody td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #edf0f5;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .finance-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .finance-table tbody tr:hover {
+            background: #f8faff;
+        }
+
+    .month-cell {
+        font-weight: 700;
+        min-width: 125px;
+    }
+
+    .month-dot {
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        margin-right: 7px;
+    }
+
+    /* Winter */
+    .month-1 .month-dot,
+    .month-2 .month-dot,
+    .month-12 .month-dot {
+        background: #4881dc;
+    }
+
+    /* Spring */
+    .month-3 .month-dot,
+    .month-4 .month-dot,
+    .month-5 .month-dot {
+        background: #35a879;
+    }
+
+    /* Summer */
+    .month-6 .month-dot,
+    .month-7 .month-dot,
+    .month-8 .month-dot {
+        background: #e5a23d;
+    }
+
+    /* Autumn */
+    .month-9 .month-dot,
+    .month-10 .month-dot,
+    .month-11 .month-dot {
+        background: #9674d8;
+    }
+
+    .amount {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .amount-positive {
+        color: #20835f;
+        font-weight: 700;
+    }
+
+    .amount-negative {
+        color: #bd5b51;
+    }
+
+    .payment-badge {
+        display: inline-block;
+        border-radius: 6px;
+        padding: 5px 8px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .cash-badge {
+        background: #e5f6ed;
+        color: #237a54;
+    }
+
+    .card-badge {
+        background: #eee9fc;
+        color: #6e55ad;
+    }
+
+    .share-cell {
+        color: #58657a;
+    }
+
+    .observation {
+        white-space: normal !important;
+        min-width: 160px;
+        max-width: 240px;
+        color: #788397;
+    }
+
+    .annual-row td {
+        background: #f3f6fc;
+        font-weight: 700;
+        border-top: 2px solid #dce3ef;
+    }
+
+    .empty-observation {
+        color: #b0b7c3;
+    }
+
+    @@media (max-width: 600px) {
+        .finance-page {
+            padding-top: 15px;
+        }
+
+        .finance-card-value {
+            font-size: 21px;
+        }
+    }
+</style>
+
+<div class="finance-page">
+
+    <div class="finance-header">
+        <div>
+            <h2 style="font-weight: 700; margin: 0;">
+                Financial Overview
+            </h2>
+
+            <div class="finance-subtitle">
+                SABA LATIN monthly revenue, expenses and profit distribution
+            </div>
+        </div>
+
+        @using (Html.BeginForm(
+            "SumaMensual",
+            ViewContext.RouteData.Values["controller"].ToString(),
+            FormMethod.Get,
+            new { @class = "finance-filter" }))
+        {
+            <label for="año" style="margin: 0;">Year</label>
+
+            <select id="año" name="año">
+                @for (int y = DateTime.Now.Year - 5;
+                      y <= DateTime.Now.Year + 1; y++)
+                {
+                    <option value="@y"
+                            selected="@(y == selectedYear ? "selected" : null)">
+                        @y
+                    </option>
+                }
+            </select>
+
+            <button type="submit">Apply</button>
+        }
+    </div>
+
+    <div class="finance-cards">
+
+        <div class="finance-card total">
+            <div class="finance-card-label">Total Revenue</div>
+            <div class="finance-card-value">
+                @totalRevenue.ToString("N2")
+            </div>
+        </div>
+
+        <div class="finance-card cash">
+            <div class="finance-card-label">Cash Payments</div>
+            <div class="finance-card-value">
+                @totalCash.ToString("N2")
+            </div>
+        </div>
+
+        <div class="finance-card card-payment">
+            <div class="finance-card-label">Card Payments</div>
+            <div class="finance-card-value">
+                @totalCard.ToString("N2")
+            </div>
+        </div>
+
+        <div class="finance-card rent">
+            <div class="finance-card-label">Expenses / Rent</div>
+            <div class="finance-card-value">
+                @totalRent.ToString("N2")
+            </div>
+        </div>
+
+        <div class="finance-card profit">
+            <div class="finance-card-label">Annual Take Home</div>
+            <div class="finance-card-value">
+                @totalTakeHome.ToString("N2")
+            </div>
+        </div>
+
+    </div>
+
+    <div class="finance-table-wrapper">
+        <table class="finance-table">
+
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th class="amount">Revenue</th>
+                    <th class="amount">Cash</th>
+                    <th class="amount">Card</th>
+                    <th class="amount">Rent</th>
+                    <th class="amount">Take Home</th>
+                    <th class="amount">Lee · 45%</th>
+                    <th class="amount">Chloe · 45%</th>
+                    <th class="amount">Business · 10%</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in months)
+                {
+                    <tr>
+                        <td class="month-cell month-@item.Mes">
+                            <span class="month-dot"></span>@item.NombreMes
+
+                            <div style="font-size: 11px; color: #9aa3b2; font-weight: 400;">
+                                @item.Año
+                            </div>
+                        </td>
+
+                        <td class="amount">
+                            @item.Total.ToString("N2")
+                        </td>
+
+                        <td class="amount">
+                            <span class="payment-badge cash-badge">
+                                @item.Cash.ToString("N2")
+                            </span>
+                        </td>
+
+                        <td class="amount">
+                            <span class="payment-badge card-badge">
+                                @item.Card.ToString("N2")
+                            </span>
+                        </td>
+
+                        <td class="amount amount-negative">
+                            @item.Rent.ToString("N2")
+                        </td>
+
+                        <td class="amount @(item.TakeHome >= 0 ? "amount-positive" : "amount-negative")">
+                            @item.TakeHome.ToString("N2")
+                        </td>
+
+                        <td class="amount share-cell">
+                            @item.Lee.ToString("N2")
+                        </td>
+
+                        <td class="amount share-cell">
+                            @item.Chloe.ToString("N2")
+                        </td>
+
+                        <td class="amount share-cell">
+                            @item.Business.ToString("N2")
+                        </td>
+
+                        <td class="observation">
+                            @if (string.IsNullOrWhiteSpace(item.Observacion))
+                            {
+                                <span class="empty-observation">—</span>
+                            }
+                            else
+                            {
+                                @item.Observacion
+                            }
+                        </td>
+                    </tr>
+                }
+
+                <tr class="annual-row">
+                    <td>ANNUAL TOTAL</td>
+
+                    <td class="amount">
+                        @totalRevenue.ToString("N2")
+                    </td>
+
+                    <td class="amount">
+                        @totalCash.ToString("N2")
+                    </td>
+
+                    <td class="amount">
+                        @totalCard.ToString("N2")
+                    </td>
+
+                    <td class="amount">
+                        @totalRent.ToString("N2")
+                    </td>
+
+                    <td class="amount">
+                        @totalTakeHome.ToString("N2")
+                    </td>
+
+                    <td class="amount">
+                        @months.Sum(m => m.Lee).ToString("N2")
+                    </td>
+
+                    <td class="amount">
+                        @months.Sum(m => m.Chloe).ToString("N2")
+                    </td>
+
+                    <td class="amount">
+                        @months.Sum(m => m.Business).ToString("N2")
+                    </td>
+
+                    <td></td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+    <div style="margin-top: 12px; color: #8992a2; font-size: 12px;">
+        Take Home Distribution: Lee 45% · Chloe 45% · Business 10%.
+        Amounts are shown in the business's configured currency.
+    </div>
+
+</div>

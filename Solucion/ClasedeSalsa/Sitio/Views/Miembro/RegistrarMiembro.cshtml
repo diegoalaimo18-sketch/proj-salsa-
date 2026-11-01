@@ -1,0 +1,47 @@
+﻿@model Sitio.Models.Miembro
+
+@{
+    ViewBag.Title = "Register Member";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Register Member</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="row">
+        <div class="col-md-6 col-lg-4">
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.NombreCompleto, "Name")
+                @Html.EditorFor(model => model.NombreCompleto, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter full name" } })
+                @Html.ValidationMessageFor(model => model.NombreCompleto, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Telefono, "Phone")
+                @Html.EditorFor(model => model.Telefono, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter phone number" } })
+                @Html.ValidationMessageFor(model => model.Telefono, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Mail, "Mail")
+                @Html.EditorFor(model => model.Mail, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter email" } })
+                @Html.ValidationMessageFor(model => model.Mail, "", new { @class = "text-danger" })
+            </div>
+
+            <input type="submit" value="Register Member" class="btn btn-primary" />
+            @if (ViewBag.Mensaje != null)
+            {
+        <div class="alert alert-danger">
+            @ViewBag.Mensaje
+        </div>
+        }
+        </div>
+    </div>
+}
